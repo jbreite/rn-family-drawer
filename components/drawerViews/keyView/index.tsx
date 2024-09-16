@@ -3,6 +3,8 @@ import { Octicons } from "@expo/vector-icons";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Reasons from "./reasons";
+import KeyViewButton from "./keyViewButton";
+import { SymbolView } from "expo-symbols";
 
 export default function KeyView({
   title,
@@ -41,7 +43,7 @@ export default function KeyView({
           </Pressable>
         </View>
 
-        <View style={{ gap: 24 }}>
+        <View style={{ gap: 16 }}>
           <Text style={styles.titleText}>{title}</Text>
           <Text style={styles.headingText}>{heading}</Text>
         </View>
@@ -57,9 +59,20 @@ export default function KeyView({
 
       <Reasons />
 
-      <TouchableOpacity onPress={onPress}>
-        <Text>Go Back</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: "row", gap: 16 }}>
+        <KeyViewButton
+          onPress={onPress}
+          text="Cancel"
+          backgroundColor={Colors.grey[200]}
+        />
+        <KeyViewButton
+          onPress={onPress}
+          text="Reveal"
+          backgroundColor={"#00B2FF"}
+          textColor="white"
+          icon={<SymbolView name="faceid" tintColor={"white"} weight="bold" />}
+        />
+      </View>
     </View>
   );
 }
@@ -70,7 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   headingText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     color: Colors.grey[300],
   },
