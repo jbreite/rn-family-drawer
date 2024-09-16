@@ -29,7 +29,7 @@ const BORDER_RADIUS = 24;
 
 export default function Index() {
   const [isOpen, setIsOpen] = useState(false);
-  const { bottom } = useSafeAreaInsets();
+  const { bottom, top } = useSafeAreaInsets();
   const height = useSharedValue(INITIAL_CONTAINER_HEIGHT);
   const [view, setView] = useState("default");
 
@@ -52,7 +52,7 @@ export default function Index() {
   return (
     <Animated.View style={styles.mainContainer}>
       <TouchableOpacity onPress={handleDrawer} style={{ alignItems: "center" }}>
-        <Text style={{ fontSize: 24 }}>Open Modal</Text>
+        <Text style={{ fontSize: 24 }}>Open Drawer</Text>
       </TouchableOpacity>
       {isOpen && (
         <Animated.View
@@ -87,7 +87,7 @@ export default function Index() {
               style={{
                 position: "absolute",
                 padding: PADDING,
-                width: "100%"
+                width: "100%",
               }}
               onLayout={(e) => {
                 const layoutHeight = e.nativeEvent.layout.height;
@@ -107,5 +107,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
   },
 });
