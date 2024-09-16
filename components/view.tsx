@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Text, View, TouchableOpacity, LayoutChangeEvent } from "react-native";
 import Animated from "react-native-reanimated";
+import DefaultDrawerView from "./drawerViews/defaultDrawer";
+
 export type Views = "default" | "remove" | "phrase" | "key";
 
 export default function DrawerView({
@@ -13,40 +15,11 @@ export default function DrawerView({
   const content = useMemo(() => {
     switch (view) {
       case "default":
-        return (
-          <View>
-            <Text>This is the default case</Text>
-            <View
-              style={{
-                marginTop: 24,
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setView("key")}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Key</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setView("phrase")}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Phrase</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setView("remove")}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Remove</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        );
+        return <DefaultDrawerView setView={setView} />;
+
       case "remove":
         return (
-          <View>
+          <View style={{ flex: 1 }}>
             <Text>
               You haven't backed up your wallet yet. If you remove it, you could
               lose access forever. We suggest tapping and backing up your wallet
@@ -96,9 +69,9 @@ export default function DrawerView({
           </View>
         );
     }
-  }, [view, setView]);
+  }, [view]);
 
-  return <Animated.View>{content}</Animated.View>;
+  return <Animated.View style={{ flex: 1 }}>{content}</Animated.View>;
 }
 
 const styles = {

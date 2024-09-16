@@ -14,6 +14,7 @@ import Animated, {
   runOnJS,
   SlideInDown,
   SlideOutDown,
+  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withSpring,
@@ -21,9 +22,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const SCREEEN_WIDTH = Dimensions.get("window").width;
 const HORIZONTAL_MARGIN = 24;
-const INITIAL_CONTAINER_HEIGHT = -999;
+const INITIAL_CONTAINER_HEIGHT = 0;
+const PADDING = 24;
+const BORDER_RADIUS = 24;
 
 export default function Index() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +36,10 @@ export default function Index() {
   const derivedHeight = useDerivedValue(() => {
     return withSpring(height.value, { overshootClamping: true });
   }, [view]);
+
+  const rDrawerStyle = useAnimatedStyle(() => ({
+    height: derivedHeight.value,
+  }));
 
   const updateView = (newView: string) => {
     setView(newView);
@@ -62,23 +68,26 @@ export default function Index() {
           </TouchableWithoutFeedback>
 
           <Animated.View
-            style={{
-              height: derivedHeight,
-              bottom: bottom,
-              position: "absolute",
-              borderRadius: 24,
-              borderCurve: "continuous",
-              backgroundColor: "red",
-              left: HORIZONTAL_MARGIN,
-              right: HORIZONTAL_MARGIN,
-            }}
+            style={[
+              {
+                bottom: bottom,
+                position: "absolute",
+                borderRadius: BORDER_RADIUS,
+                borderCurve: "continuous",
+                backgroundColor: "white",
+                left: HORIZONTAL_MARGIN,
+                right: HORIZONTAL_MARGIN,
+              },
+              rDrawerStyle,
+            ]}
             entering={SlideInDown}
             exiting={SlideOutDown}
           >
-            <View
+            <Animated.View
               style={{
                 position: "absolute",
-                padding: 24,
+                padding: PADDING,
+                width: "100%"
               }}
               onLayout={(e) => {
                 const layoutHeight = e.nativeEvent.layout.height;
@@ -87,7 +96,7 @@ export default function Index() {
               }}
             >
               <DrawerView view={view} setView={updateView} />
-            </View>
+            </Animated.View>
           </Animated.View>
         </Animated.View>
       )}
