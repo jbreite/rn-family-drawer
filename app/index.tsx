@@ -1,41 +1,75 @@
+import DrawerView, { Views } from "@/components/view";
 import { useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  SlideInDown,
+  SlideOutDown,
+  useDerivedValue,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SCREEEN_WIDTH = Dimensions.get("window").width;
 const HORIZONTAL_MARGIN = 24;
+const INITIAL_CONTAINER_HEIGHT = -999;
 
 export default function Index() {
   const [isOpen, setIsOpen] = useState(false);
   const { bottom } = useSafeAreaInsets();
+  const height = useSharedValue(INITIAL_CONTAINER_HEIGHT);
+  const [view, setView] = useState("default");
+
+  const derivedHeight = useDerivedValue(() => {
+    return withSpring(height.value, { overshootClamping: true });
+  }, [view]);
+
+  const updateView = (newView: string) => {
+    setView(newView);
+  };
 
   return (
     <Animated.View style={styles.mainContainer}>
-      <TouchableOpacity onPress={() => setIsOpen((prev) => !prev)}>
-        <Text>Open Modal</Text>
+      <TouchableOpacity
+        onPress={() => setIsOpen((prev) => !prev)}
+        style={{ alignItems: "center" }}
+      >
+        <Text style={{ fontSize: 24 }}>Open Modal</Text>
       </TouchableOpacity>
 
       {isOpen && (
         <Animated.View
           style={{
-            backgroundColor: "red",
-            position: "absolute",
+            height: derivedHeight,
             bottom: bottom,
-            left: HORIZONTAL_MARGIN,
-            right: HORIZONTAL_MARGIN,
-            padding: 24,
+            position: "absolute",
             borderRadius: 24,
             borderCurve: "continuous",
+            backgroundColor: "red",
+            left: HORIZONTAL_MARGIN,
+            right: HORIZONTAL_MARGIN,
           }}
           entering={SlideInDown}
           exiting={SlideOutDown}
         >
-          <View style={{ flex: 1, gap: 12 }}>
-            <Text>View Private Key</Text>
-            <Text>View Recovery Phrase</Text>
-            <Text>Remove Wallet</Text>
+          <View
+            style={{
+              position: "absolute",
+              padding: 24,
+            }}
+            onLayout={(e) => {
+              const layoutHeight = e.nativeEvent.layout.height;
+              console.log("LAYOUT HEIGHT:", layoutHeight);
+              height.value = layoutHeight;
+            }}
+          >
+            <DrawerView
+              view={view}
+              setView={updateView}
+            />
           </View>
         </Animated.View>
       )}
