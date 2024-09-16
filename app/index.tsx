@@ -22,10 +22,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const HORIZONTAL_MARGIN = 24;
+const HORIZONTAL_MARGIN = 16;
 const INITIAL_CONTAINER_HEIGHT = 0;
 const PADDING = 24;
-const BORDER_RADIUS = 24;
+const BORDER_RADIUS = 32;
 
 export default function Index() {
   const [isOpen, setIsOpen] = useState(false);
