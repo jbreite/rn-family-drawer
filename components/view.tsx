@@ -71,7 +71,7 @@ export default function DrawerView({
     }
   }, [view]);
 
-  return <Animated.View style={{ flex: 1 }}>{content}</Animated.View>;
+  return <Animated.View >{content}</Animated.View>;
 }
 
 const styles = {

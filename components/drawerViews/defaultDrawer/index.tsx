@@ -16,9 +16,9 @@ export default function DefaultDrawerView({
   setView: (view: Views) => void;
 }) {
   return (
-    <View style={{ flex: 1, gap: 16 }}>
+    <View style={{ gap: 16 }}>
       <DefaultHeader />
-      <View style={{ flex: 1, gap: 12 }}>
+      <View style={{ gap: 12 }}>
         <DrawerButton
           onPress={() => setView("key")}
           backgroundColor={Colors.grey[100]}
