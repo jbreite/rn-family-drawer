@@ -52,6 +52,11 @@ export default function DrawerView({
               lose access forever. We suggest tapping and backing up your wallet
               first with a valid recovery method.
             </Text>
+            <Text>
+              You haven't backed up your wallet yet. If you remove it, you could
+              lose access forever. We suggest tapping and backing up your wallet
+              first with a valid recovery method.
+            </Text>
             <TouchableOpacity
               onPress={() => setView("default")}
               style={styles.button}

@@ -1,8 +1,16 @@
 import DrawerView, { Views } from "@/components/view";
 import { useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
+  FadeIn,
+  FadeOut,
   runOnJS,
   SlideInDown,
   SlideOutDown,
@@ -31,46 +39,56 @@ export default function Index() {
     setView(newView);
   };
 
+  const handleDrawer = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <Animated.View style={styles.mainContainer}>
-      <TouchableOpacity
-        onPress={() => setIsOpen((prev) => !prev)}
-        style={{ alignItems: "center" }}
-      >
+      <TouchableOpacity onPress={handleDrawer} style={{ alignItems: "center" }}>
         <Text style={{ fontSize: 24 }}>Open Modal</Text>
       </TouchableOpacity>
-
       {isOpen && (
         <Animated.View
           style={{
-            height: derivedHeight,
-            bottom: bottom,
-            position: "absolute",
-            borderRadius: 24,
-            borderCurve: "continuous",
-            backgroundColor: "red",
-            left: HORIZONTAL_MARGIN,
-            right: HORIZONTAL_MARGIN,
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
           }}
-          entering={SlideInDown}
-          exiting={SlideOutDown}
+          entering={FadeIn}
+          exiting={FadeOut}
         >
-          <View
+          <TouchableWithoutFeedback onPress={handleDrawer}>
+            <View style={StyleSheet.absoluteFill} />
+          </TouchableWithoutFeedback>
+
+          <Animated.View
             style={{
+              height: derivedHeight,
+              bottom: bottom,
               position: "absolute",
-              padding: 24,
+              borderRadius: 24,
+              borderCurve: "continuous",
+              backgroundColor: "red",
+              left: HORIZONTAL_MARGIN,
+              right: HORIZONTAL_MARGIN,
             }}
-            onLayout={(e) => {
-              const layoutHeight = e.nativeEvent.layout.height;
-              console.log("LAYOUT HEIGHT:", layoutHeight);
-              height.value = layoutHeight;
-            }}
+            entering={SlideInDown}
+            exiting={SlideOutDown}
           >
-            <DrawerView
-              view={view}
-              setView={updateView}
-            />
-          </View>
+            <View
+              style={{
+                position: "absolute",
+                padding: 24,
+              }}
+              onLayout={(e) => {
+                const layoutHeight = e.nativeEvent.layout.height;
+                console.log("LAYOUT HEIGHT:", layoutHeight);
+                height.value = layoutHeight;
+              }}
+            >
+              <DrawerView view={view} setView={updateView} />
+            </View>
+          </Animated.View>
         </Animated.View>
       )}
     </Animated.View>
