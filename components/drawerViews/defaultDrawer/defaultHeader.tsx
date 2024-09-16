@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
-import { ICON_COLOR } from ".";
 import { Colors } from "@/constants/Colors";
 
 export default function DefaultHeader() {

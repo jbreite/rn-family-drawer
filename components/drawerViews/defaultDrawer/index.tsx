@@ -5,11 +5,6 @@ import DrawerButton from "./drawerButton";
 import DefaultHeader from "./defaultHeader";
 import { Colors } from "@/constants/Colors";
 
-export const GREY_BG_COLOR = "#F7F7F7";
-const RED_BG_COLOR = "#FEE6E4";
-const RED_TEXT_COLOR = "#FD0C1C";
-export const ICON_COLOR = "#94999F";
-
 export default function DefaultDrawerView({
   setView,
 }: {
@@ -27,7 +22,7 @@ export default function DefaultDrawerView({
         />
         <DrawerButton
           onPress={() => setView("phrase")}
-          backgroundColor={GREY_BG_COLOR}
+          backgroundColor={Colors.grey[100]}
           icon={<Octicons name="package" size={24} color={Colors.grey[300]} />}
           label="View Recovery Phrase"
         />
@@ -36,7 +31,7 @@ export default function DefaultDrawerView({
           backgroundColor={Colors.red[100]}
           icon={<Octicons name="alert" size={24} color={Colors.red[300]} />}
           label="Remove Wallet"
-          textColor={RED_TEXT_COLOR}
+          textColor={Colors.red[300]}
         />
       </View>
     </View>

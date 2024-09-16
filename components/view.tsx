@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Text, View, TouchableOpacity, LayoutChangeEvent } from "react-native";
 import Animated from "react-native-reanimated";
 import DefaultDrawerView from "./drawerViews/defaultDrawer";
+import KeyView from "./drawerViews/keyView";
 
 export type Views = "default" | "remove" | "phrase" | "key";
 
@@ -40,38 +41,24 @@ export default function DrawerView({
         );
       case "phrase":
         return (
-          <View>
-            <Text>
-              Keep your Secret Phrase safe. Don't share it with anyone else. If
-              you lose it, we can't recover it.
-            </Text>
-            <TouchableOpacity
-              onPress={() => setView("default")}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Go back</Text>
-            </TouchableOpacity>
-          </View>
+          <KeyView
+            title="Secret Recovery Phrase"
+            heading="Your Secret Recovery Phrase is the key used to back up all your wallet. Keep it secret and secure at all times."
+            onPress={() => setView("default")}
+          />
         );
       case "key":
         return (
-          <View>
-            <Text>
-              Your Private Key is the key used to back up your wallet. Keep it
-              secret and secure at all times.
-            </Text>
-            <TouchableOpacity
-              onPress={() => setView("default")}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Go back</Text>
-            </TouchableOpacity>
-          </View>
+          <KeyView
+            title="Private Key"
+            heading="Your Private Key is the key used to back up your wallet. Keep it secret and secure at all times."
+            onPress={() => setView("default")}
+          />
         );
     }
   }, [view]);
 
-  return <Animated.View >{content}</Animated.View>;
+  return <Animated.View>{content}</Animated.View>;
 }
 
 const styles = {
@@ -86,3 +73,16 @@ const styles = {
     fontSize: 16,
   },
 };
+
+// <View>
+//   <Text>
+//     Keep your Secret Phrase safe. Don't share it with anyone else. If
+//     you lose it, we can't recover it.
+//   </Text>
+//   <TouchableOpacity
+//     onPress={() => setView("default")}
+//     style={styles.button}
+//   >
+//     <Text style={styles.buttonText}>Go back</Text>
+//   </TouchableOpacity>
+// </View>
