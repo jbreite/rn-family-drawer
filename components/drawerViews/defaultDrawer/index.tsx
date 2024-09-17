@@ -1,9 +1,10 @@
 import { Octicons } from "@expo/vector-icons";
 import { View } from "react-native";
-import { Views } from "../../view";
 import DrawerButton from "./drawerButton";
 import DefaultHeader from "./defaultHeader";
 import { Colors } from "@/constants/Colors";
+
+type Views = "default" | "key" | "phrase" | "remove";
 
 export default function DefaultDrawerView({
   setView,

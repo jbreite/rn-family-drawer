@@ -1,9 +1,9 @@
 import DefaultDrawerView from "@/components/drawerViews/defaultDrawer";
 import KeyView from "@/components/drawerViews/keyView";
 import RemoveView from "@/components/drawerViews/removeView";
-import { Octicons } from "@expo/vector-icons";
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -12,6 +12,11 @@ import Animated, {
   SlideOutDown,
   FadeInUp,
   FadeOutDown,
+  useSharedValue,
+  runOnJS,
+  useAnimatedStyle,
+  clamp,
+  withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -30,7 +35,40 @@ export default function FamilyDrawer() {
 
   const handleClose = () => {
     setIsOpen(false);
+    translateY.value = 0;
   };
+
+  const translateY = useSharedValue(0);
+  const contentHeight = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onChange((event) => {
+      translateY.value = clamp(
+        translateY.value + event.changeY,
+        0,
+        contentHeight.value
+      );
+    })
+    .onFinalize((event) => {
+      const projectedEndpoint = translateY.value + event.velocityY / 60; // Adjust divisor as needed
+
+      if (
+        projectedEndpoint > contentHeight.value * 0.4 ||
+        event.velocityY > 500
+      ) {
+        // Close the drawer
+        runOnJS(handleClose)();
+      } else {
+        // Snap back to open position
+        translateY.value = withSpring(0, { overshootClamping: true });
+      }
+    });
+
+  const rDrawerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
   const content = useMemo(() => {
     switch (view) {
@@ -77,24 +115,30 @@ export default function FamilyDrawer() {
           exiting={FadeOut}
         >
           <TouchableOpacity style={styles.overlay} onPress={handleClose} />
-          <Animated.View
-            style={[styles.drawer, { bottom: bottom }]}
-            entering={SlideInDown}
-            exiting={SlideOutDown}
-            layout={LinearTransition.springify()
-              .damping(2)
-              .overshootClamping(-1)}
-          >
-            <Animated.View style={styles.content}>
-              <Animated.View
-                entering={FadeInUp.duration(200)}
-                exiting={FadeOutDown.duration(200)}
-                key={view}
-              >
-                {content}
+          <GestureDetector gesture={panGesture}>
+            <Animated.View
+              style={[styles.drawer, { bottom: bottom }, rDrawerStyle]}
+              entering={SlideInDown}
+              exiting={SlideOutDown}
+              layout={LinearTransition.springify()
+                .damping(1)
+                .stiffness(200)
+                .overshootClamping(-1)}
+              onLayout={(event) => {
+                contentHeight.value = event.nativeEvent.layout.height;
+              }}
+            >
+              <Animated.View style={styles.content}>
+                <Animated.View
+                  entering={FadeInUp.duration(150)}
+                  exiting={FadeOutDown.duration(150)}
+                  key={view}
+                >
+                  {content}
+                </Animated.View>
               </Animated.View>
             </Animated.View>
-          </Animated.View>
+          </GestureDetector>
         </Animated.View>
       )}
     </View>
@@ -109,7 +153,6 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    backgroundColor: "#f0f0f0",
     borderRadius: 5,
   },
   overlay: {

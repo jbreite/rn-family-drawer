@@ -71,5 +71,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: Colors.grey[300],
+    lineHeight: 24
   },
 });
