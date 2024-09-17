@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 import { Text, View, TouchableOpacity, LayoutChangeEvent } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  FadingTransition,
+  Layout,
+  LinearTransition,
+} from "react-native-reanimated";
 import DefaultDrawerView from "./drawerViews/defaultDrawer";
 import KeyView from "./drawerViews/keyView";
 
@@ -58,7 +64,17 @@ export default function DrawerView({
     }
   }, [view]);
 
-  return <Animated.View>{content}</Animated.View>;
+  return (
+    <Animated.View
+      entering={FadeIn.duration(100).springify()}
+      exiting={FadeOut.duration(100).springify()}
+      // layout={springify()}
+
+      key={view}
+    >
+      {content}
+    </Animated.View>
+  );
 }
 
 const styles = {
@@ -73,16 +89,3 @@ const styles = {
     fontSize: 16,
   },
 };
-
-// <View>
-//   <Text>
-//     Keep your Secret Phrase safe. Don't share it with anyone else. If
-//     you lose it, we can't recover it.
-//   </Text>
-//   <TouchableOpacity
-//     onPress={() => setView("default")}
-//     style={styles.button}
-//   >
-//     <Text style={styles.buttonText}>Go back</Text>
-//   </TouchableOpacity>
-// </View>

@@ -11,7 +11,7 @@ export default function DefaultDrawerView({
   setView: (view: Views) => void;
 }) {
   return (
-    <View style={{ gap: 16 }}>
+    <View style={{  gap: 16 }}>
       <DefaultHeader />
       <View style={{ gap: 12 }}>
         <DrawerButton

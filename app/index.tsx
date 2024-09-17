@@ -1,24 +1,18 @@
-import DrawerView, { Views } from "@/components/view";
-import { useState } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import DefaultDrawerView from "@/components/drawerViews/defaultDrawer";
+import KeyView from "@/components/drawerViews/keyView";
+import RemoveView from "@/components/drawerViews/removeView";
+import { Octicons } from "@expo/vector-icons";
+import React, { useMemo, useState } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
   FadeIn,
   FadeOut,
-  runOnJS,
+  LinearTransition,
   SlideInDown,
   SlideOutDown,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -27,87 +21,112 @@ const INITIAL_CONTAINER_HEIGHT = 0;
 const PADDING = 24;
 const BORDER_RADIUS = 32;
 
-export default function Index() {
+export default function FamilyDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const { bottom, top } = useSafeAreaInsets();
-  const height = useSharedValue(INITIAL_CONTAINER_HEIGHT);
   const [view, setView] = useState("default");
+  const { bottom } = useSafeAreaInsets();
+  const height = useSharedValue(INITIAL_CONTAINER_HEIGHT);
 
-  const derivedHeight = useDerivedValue(() => {
-    return withSpring(height.value, { overshootClamping: true });
+  const content = useMemo(() => {
+    switch (view) {
+      case "default":
+        return <DefaultDrawerView setView={setView} />;
+      case "remove":
+        return <RemoveView onPress={() => setView("default")} />;
+      case "phrase":
+        return (
+          <KeyView
+            title="Secret Recovery Phrase"
+            heading="Your Secret Recovery Phrase is the key used to back up all your wallet. Keep it secret and secure at all times."
+            onPress={() => setView("default")}
+          />
+        );
+      case "key":
+        return (
+          <KeyView
+            title="Private Key"
+            heading="Your Private Key is the key used to back up your wallet. Keep it secret and secure at all times."
+            onPress={() => setView("default")}
+          />
+        );
+    }
   }, [view]);
 
-  const rDrawerStyle = useAnimatedStyle(() => ({
-    height: derivedHeight.value,
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: height.value,
   }));
 
-  const updateView = (newView: string) => {
-    setView(newView);
+  const handleOpen = () => {
+    setIsOpen(true);
   };
 
-  const handleDrawer = () => {
-    setIsOpen((prev) => !prev);
+  const handleClose = () => {
+    setIsOpen(false);
   };
-
   return (
-    <Animated.View style={styles.mainContainer}>
-      <TouchableOpacity onPress={handleDrawer} style={{ alignItems: "center" }}>
-        <Text style={{ fontSize: 24 }}>Open Drawer</Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={handleOpen}>
+        <Text>Try it out</Text>
       </TouchableOpacity>
-      {isOpen && (
-        <Animated.View
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
-          }}
-          entering={FadeIn}
-          exiting={FadeOut}
-        >
-          <TouchableWithoutFeedback onPress={handleDrawer}>
-            <View style={StyleSheet.absoluteFill} />
-          </TouchableWithoutFeedback>
 
+      {isOpen && (
+        <View style={StyleSheet.absoluteFill}>
+          <TouchableOpacity style={styles.overlay} onPress={handleClose} />
           <Animated.View
-            style={[
-              {
-                bottom: bottom,
-                position: "absolute",
-                borderRadius: BORDER_RADIUS,
-                borderCurve: "continuous",
-                backgroundColor: "white",
-                left: HORIZONTAL_MARGIN,
-                right: HORIZONTAL_MARGIN,
-              },
-              rDrawerStyle,
-            ]}
+            style={[styles.drawer, { bottom: bottom }]}
             entering={SlideInDown}
             exiting={SlideOutDown}
           >
             <Animated.View
-              style={{
-                position: "absolute",
-                padding: PADDING,
-                width: "100%",
-              }}
-              onLayout={(e) => {
-                const layoutHeight = e.nativeEvent.layout.height;
-                console.log("LAYOUT HEIGHT:", layoutHeight);
-                height.value = layoutHeight;
+              style={styles.content}
+              onLayout={(event) => {
+                const { height: contentHeight } = event.nativeEvent.layout;
+                console.log("CONTENT HEIGHT:", contentHeight);
+                height.value = withSpring(contentHeight, {
+                  overshootClamping: false,
+                });
               }}
             >
-              <DrawerView view={view} setView={updateView} />
+              <Animated.View
+                entering={FadeIn}
+                exiting={FadeOut}
+                layout={LinearTransition.springify().overshootClamping(0)}
+                key={view}
+              >
+                {content}
+              </Animated.View>
             </Animated.View>
           </Animated.View>
-        </Animated.View>
+        </View>
       )}
-    </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  container: {
     flex: 1,
-    alignContent: "center",
     justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    padding: 10,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 5,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  drawer: {
+    position: "absolute",
+    left: HORIZONTAL_MARGIN,
+    right: HORIZONTAL_MARGIN,
+    backgroundColor: "white",
+    borderRadius: BORDER_RADIUS,
+    overflow: "hidden",
+  },
+  content: {
+    padding: PADDING,
   },
 });
