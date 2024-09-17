@@ -82,7 +82,7 @@ export default function FamilyDrawer() {
             entering={SlideInDown}
             exiting={SlideOutDown}
             layout={LinearTransition.springify()
-              .damping(5)
+              .damping(2)
               .overshootClamping(-1)}
           >
             <Animated.View style={styles.content}>
