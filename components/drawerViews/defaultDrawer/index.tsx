@@ -7,12 +7,14 @@ import { Colors } from "@/constants/Colors";
 
 export default function DefaultDrawerView({
   setView,
+  onClose,
 }: {
   setView: (view: Views) => void;
+  onClose: () => void;
 }) {
   return (
     <View style={{ gap: 16 }}>
-      <DefaultHeader />
+      <DefaultHeader onPress={onClose} />
       <View style={{ gap: 12 }}>
         <DrawerButton
           onPress={() => setView("key")}

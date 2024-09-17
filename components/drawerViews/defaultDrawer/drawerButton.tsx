@@ -60,7 +60,6 @@ export default function DrawerButton({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flex: 1,
     flexDirection: "row",
     gap: 16,
     paddingVertical: 12,

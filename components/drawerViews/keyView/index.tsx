@@ -10,10 +10,12 @@ export default function KeyView({
   title,
   heading,
   onPress,
+  onClose,
 }: {
   title: string;
   heading: string;
   onPress: () => void;
+  onClose: () => void;
 }) {
   return (
     <View style={{ gap: 24 }}>
@@ -38,6 +40,7 @@ export default function KeyView({
               alignItems: "center",
               justifyContent: "center",
             }}
+            onPress={onClose}
           >
             <Octicons name="x" size={24} color={Colors.grey[300]} />
           </Pressable>
