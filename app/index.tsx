@@ -11,6 +11,8 @@ import Animated, {
   LinearTransition,
   SlideInDown,
   SlideOutDown,
+  FadeInUp,
+  FadeOutDown,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -24,10 +26,18 @@ export default function FamilyDrawer() {
   const [view, setView] = useState("default");
   const { bottom } = useSafeAreaInsets();
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   const content = useMemo(() => {
     switch (view) {
       case "default":
-        return <DefaultDrawerView setView={setView} />;
+        return <DefaultDrawerView setView={setView} onClose={handleClose} />;
       case "remove":
         return <RemoveView onPress={() => setView("default")} />;
       case "phrase":
@@ -36,6 +46,7 @@ export default function FamilyDrawer() {
             title="Secret Recovery Phrase"
             heading="Your Secret Recovery Phrase is the key used to back up all your wallet. Keep it secret and secure at all times."
             onPress={() => setView("default")}
+            onClose={handleClose}
           />
         );
       case "key":
@@ -44,18 +55,12 @@ export default function FamilyDrawer() {
             title="Private Key"
             heading="Your Private Key is the key used to back up your wallet. Keep it secret and secure at all times."
             onPress={() => setView("default")}
+            onClose={handleClose}
           />
         );
     }
   }, [view]);
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={handleOpen}>
@@ -63,21 +68,31 @@ export default function FamilyDrawer() {
       </TouchableOpacity>
 
       {isOpen && (
-        <View style={StyleSheet.absoluteFill}>
+        <Animated.View
+          style={StyleSheet.absoluteFill}
+          entering={FadeIn}
+          exiting={FadeOut}
+        >
           <TouchableOpacity style={styles.overlay} onPress={handleClose} />
           <Animated.View
             style={[styles.drawer, { bottom: bottom }]}
             entering={SlideInDown}
             exiting={SlideOutDown}
-            layout={LinearTransition.springify().overshootClamping(-1)}
+            layout={LinearTransition.springify()
+              .damping(5)
+              .overshootClamping(-1)}
           >
             <Animated.View style={styles.content}>
-              <Animated.View entering={FadeIn} exiting={FadeOut} key={view}>
+              <Animated.View
+                entering={FadeInUp.duration(200)}
+                exiting={FadeOutDown.duration(200)}
+                key={view}
+              >
                 {content}
               </Animated.View>
             </Animated.View>
           </Animated.View>
-        </View>
+        </Animated.View>
       )}
     </View>
   );

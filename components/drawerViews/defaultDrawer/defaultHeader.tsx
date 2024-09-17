@@ -2,7 +2,7 @@ import { Pressable, Text, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
-export default function DefaultHeader() {
+export default function DefaultHeader({ onPress }: { onPress: () => void }) {
   return (
     <View style={{ gap: 24 }}>
       <View
@@ -23,6 +23,7 @@ export default function DefaultHeader() {
             alignItems: "center",
             justifyContent: "center",
           }}
+          onPress={onPress}
         >
           <Octicons name="x" size={24} color={Colors.grey[300]} />
         </Pressable>
