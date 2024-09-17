@@ -5,7 +5,6 @@ import { Octicons } from "@expo/vector-icons";
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Animated, {
-  useSharedValue,
   FadeIn,
   FadeOut,
   LinearTransition,
@@ -17,7 +16,6 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HORIZONTAL_MARGIN = 16;
-const INITIAL_CONTAINER_HEIGHT = 0;
 const PADDING = 24;
 const BORDER_RADIUS = 32;
 
@@ -39,7 +37,12 @@ export default function FamilyDrawer() {
       case "default":
         return <DefaultDrawerView setView={setView} onClose={handleClose} />;
       case "remove":
-        return <RemoveView onPress={() => setView("default")} />;
+        return (
+          <RemoveView
+            onPress={() => setView("default")}
+            onClose={handleClose}
+          />
+        );
       case "phrase":
         return (
           <KeyView
