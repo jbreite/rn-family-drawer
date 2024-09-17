@@ -6,15 +6,11 @@ import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
-  withSpring,
   FadeIn,
   FadeOut,
   LinearTransition,
   SlideInDown,
   SlideOutDown,
-  withTiming,
-  useDerivedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -27,7 +23,6 @@ export default function FamilyDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState("default");
   const { bottom } = useSafeAreaInsets();
-  const height = useSharedValue(INITIAL_CONTAINER_HEIGHT);
 
   const content = useMemo(() => {
     switch (view) {
@@ -54,12 +49,6 @@ export default function FamilyDrawer() {
     }
   }, [view]);
 
-  const derivedHeight = useDerivedValue(() => height.value);
-
-  const rDrawerStyle = useAnimatedStyle(() => ({
-    height: withSpring(derivedHeight.value, {}),
-  }));
-
   const handleOpen = () => {
     setIsOpen(true);
   };
@@ -77,24 +66,13 @@ export default function FamilyDrawer() {
         <View style={StyleSheet.absoluteFill}>
           <TouchableOpacity style={styles.overlay} onPress={handleClose} />
           <Animated.View
-            style={[styles.drawer, rDrawerStyle, { bottom: bottom }]}
+            style={[styles.drawer, { bottom: bottom }]}
             entering={SlideInDown}
             exiting={SlideOutDown}
+            layout={LinearTransition.springify().overshootClamping(-1)}
           >
-            <Animated.View
-              style={styles.content}
-              onLayout={(event) => {
-                const { height: contentHeight } = event.nativeEvent.layout;
-                console.log("CONTENT HEIGHT:", contentHeight);
-                height.value = contentHeight;
-              }}
-            >
-              <Animated.View
-                entering={FadeIn}
-                exiting={FadeOut}
-                // layout={LinearTransition.springify().overshootClamping(0)}
-                key={view}
-              >
+            <Animated.View style={styles.content}>
+              <Animated.View entering={FadeIn} exiting={FadeOut} key={view}>
                 {content}
               </Animated.View>
             </Animated.View>
