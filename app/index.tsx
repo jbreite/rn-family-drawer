@@ -13,6 +13,8 @@ import Animated, {
   LinearTransition,
   SlideInDown,
   SlideOutDown,
+  withTiming,
+  useDerivedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -52,8 +54,10 @@ export default function FamilyDrawer() {
     }
   }, [view]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: height.value,
+  const derivedHeight = useDerivedValue(() => height.value);
+
+  const rDrawerStyle = useAnimatedStyle(() => ({
+    height: withSpring(derivedHeight.value, {}),
   }));
 
   const handleOpen = () => {
@@ -73,7 +77,7 @@ export default function FamilyDrawer() {
         <View style={StyleSheet.absoluteFill}>
           <TouchableOpacity style={styles.overlay} onPress={handleClose} />
           <Animated.View
-            style={[styles.drawer, { bottom: bottom }]}
+            style={[styles.drawer, rDrawerStyle, { bottom: bottom }]}
             entering={SlideInDown}
             exiting={SlideOutDown}
           >
@@ -82,15 +86,13 @@ export default function FamilyDrawer() {
               onLayout={(event) => {
                 const { height: contentHeight } = event.nativeEvent.layout;
                 console.log("CONTENT HEIGHT:", contentHeight);
-                height.value = withSpring(contentHeight, {
-                  overshootClamping: false,
-                });
+                height.value = contentHeight;
               }}
             >
               <Animated.View
                 entering={FadeIn}
                 exiting={FadeOut}
-                layout={LinearTransition.springify().overshootClamping(0)}
+                // layout={LinearTransition.springify().overshootClamping(0)}
                 key={view}
               >
                 {content}
