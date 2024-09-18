@@ -35,7 +35,7 @@ function ReasonRow({ icon, text }: { icon: React.ReactNode; text: string }) {
         style={{
           fontSize: 16,
           color: Colors.grey[300],
-          fontWeight: "bold",
+          fontFamily: "OpenRunde-Semibold",
         }}
       >
         {text}

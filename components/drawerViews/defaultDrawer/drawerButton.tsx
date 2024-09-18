@@ -51,7 +51,9 @@ export default function DrawerButton({
       onPressOut={onPressOut}
     >
       {icon}
-      <Text style={{ fontSize: 16, fontWeight: "bold", color: textColor }}>
+      <Text
+        style={{ fontSize: 16, color: textColor, fontFamily: "OpenRunde-Semibold" }}
+      >
         {label}
       </Text>
     </AnimatedPressable>

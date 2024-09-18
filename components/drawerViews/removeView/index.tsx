@@ -65,12 +65,12 @@ export default function RemoveView({
 const styles = StyleSheet.create({
   titleText: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "OpenRunde-Bold",
   },
   headingText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "OpenRunde-Semibold",
     color: Colors.grey[300],
-    lineHeight: 24
+    lineHeight: 24,
   },
 });

@@ -54,7 +54,9 @@ export default function KeyViewButton({
       ]}
     >
       {icon && icon}
-      <Text style={{ fontSize: 18, fontWeight: "bold", color: textColor }}>
+      <Text
+        style={{ fontSize: 18, color: textColor, fontFamily: "OpenRunde-Bold" }}
+      >
         {text}
       </Text>
     </AnimatedPressable>

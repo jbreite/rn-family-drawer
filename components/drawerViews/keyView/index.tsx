@@ -83,11 +83,11 @@ export default function KeyView({
 const styles = StyleSheet.create({
   titleText: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "OpenRunde-Bold",
   },
   headingText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "OpenRunde-semibold",
     color: Colors.grey[300],
   },
 });

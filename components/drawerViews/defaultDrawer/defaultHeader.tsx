@@ -12,7 +12,15 @@ export default function DefaultHeader({ onPress }: { onPress: () => void }) {
           alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>Options</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "bold",
+            fontFamily: "OpenRunde-Bold",
+          }}
+        >
+          Options
+        </Text>
         <Pressable
           style={{
             padding: 4,
