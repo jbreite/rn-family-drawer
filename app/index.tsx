@@ -82,7 +82,7 @@ export default function FamilyDrawer() {
     const heightDifference = Math.abs(
       contentHeight.value - previousHeightRef.current
     );
-    console.log("heightDifference:", heightDifference);
+
     previousHeightRef.current = contentHeight.value;
 
     const finalValue = Math.min(
@@ -90,12 +90,8 @@ export default function FamilyDrawer() {
       MAX_DURATION
     );
 
-    console.log("finalValue:", finalValue);
-
     return finalValue;
   });
-
-  console.log("opacityDuration:", opacityDuration.value);
 
   const content = useMemo(() => {
     switch (view) {
