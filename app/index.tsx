@@ -23,8 +23,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const HORIZONTAL_MARGIN = 16;
 const PADDING = 24;
 const BORDER_RADIUS = 36;
-const MIN_DURATION = 170; // in milliseconds
-const MAX_DURATION = 290; // in milliseconds
+const MIN_DURATION = 120; // in milliseconds
+const MAX_DURATION = 280; // in milliseconds
 
 export default function FamilyDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,13 +82,20 @@ export default function FamilyDrawer() {
     const heightDifference = Math.abs(
       contentHeight.value - previousHeightRef.current
     );
+    console.log("heightDifference:", heightDifference);
     previousHeightRef.current = contentHeight.value;
 
-    return Math.min(
+    const finalValue = Math.min(
       Math.max((heightDifference / 500) * 1000, MIN_DURATION),
       MAX_DURATION
     );
+
+    console.log("finalValue:", finalValue);
+
+    return finalValue;
   });
+
+  console.log("opacityDuration:", opacityDuration.value);
 
   const content = useMemo(() => {
     switch (view) {
