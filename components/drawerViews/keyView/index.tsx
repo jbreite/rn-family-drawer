@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Reasons from "./reasons";
 import KeyViewButton from "./keyViewButton";
 import { SymbolView } from "expo-symbols";
+import Header from "../header";
 
 export default function KeyView({
   title,
@@ -22,29 +23,10 @@ export default function KeyView({
       {/*Above Line*/}
       <View style={{ gap: 24 }}>
         {/*Header*/}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Octicons name="eye" size={40} color={Colors.grey[300]} />
-          <Pressable
-            style={{
-              padding: 4,
-              aspectRatio: 1,
-              width: 32,
-              backgroundColor: Colors.grey[100],
-              borderRadius: 1000,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={onClose}
-          >
-            <Octicons name="x" size={24} color={Colors.grey[300]} />
-          </Pressable>
-        </View>
+      <Header
+          onPress={onClose}
+          leftLabel={<Octicons name="eye" size={40} color={Colors.grey[300]} />}
+        />
 
         <View style={{ gap: 16 }}>
           <Text style={styles.titleText}>{title}</Text>

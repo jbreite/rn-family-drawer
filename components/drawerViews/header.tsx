@@ -2,7 +2,13 @@ import { Pressable, Text, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
-export default function DefaultHeader({ onPress }: { onPress: () => void }) {
+export default function Header({
+  onPress,
+  leftLabel,
+}: {
+  onPress: () => void;
+  leftLabel: React.ReactNode | string;
+}) {
   return (
     <View style={{ gap: 24 }}>
       <View
@@ -12,15 +18,19 @@ export default function DefaultHeader({ onPress }: { onPress: () => void }) {
           alignItems: "center",
         }}
       >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "bold",
-            fontFamily: "OpenRunde-Bold",
-          }}
-        >
-          Options
-        </Text>
+        {typeof leftLabel === "string" ? (
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              fontFamily: "OpenRunde-Bold",
+            }}
+          >
+            Options
+          </Text>
+        ) : (
+          leftLabel
+        )}
         <Pressable
           style={{
             padding: 4,
@@ -36,9 +46,7 @@ export default function DefaultHeader({ onPress }: { onPress: () => void }) {
           <Octicons name="x" size={24} color={Colors.grey[300]} />
         </Pressable>
       </View>
-      <View
-        style={{ height: 1, width: "100%", backgroundColor: Colors.grey[100] }}
-      />
+  
     </View>
   );
 }

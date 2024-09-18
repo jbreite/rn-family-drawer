@@ -2,6 +2,7 @@ import { Colors } from "@/constants/Colors";
 import { Octicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import KeyViewButton from "../keyView/keyViewButton";
+import Header from "../header";
 
 export default function RemoveView({
   onPress,
@@ -12,34 +13,15 @@ export default function RemoveView({
 }) {
   return (
     <View style={{ gap: 24 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Octicons name="alert" size={40} color={Colors.red[300]} />
-        <Pressable
-          style={{
-            padding: 4,
-            aspectRatio: 1,
-            width: 32,
-            backgroundColor: Colors.grey[100],
-            borderRadius: 1000,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={onClose}
-        >
-          <Octicons name="x" size={24} color={Colors.grey[300]} />
-        </Pressable>
-      </View>
+      <Header
+        onPress={onClose}
+        leftLabel={<Octicons name="alert" size={40} color={Colors.red[300]} />}
+      />
 
       <View style={{ gap: 16 }}>
         <Text style={styles.titleText}>Are you sure?</Text>
         <Text style={styles.headingText}>
-          You haven’t backed up your wallet yet. If you remove it, you could
+          You haven't backed up your wallet yet. If you remove it, you could
           lose access forever. We suggest tapping and backing up your wallet
           first with a valid recovery method.
         </Text>

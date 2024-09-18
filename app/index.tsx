@@ -90,8 +90,6 @@ export default function FamilyDrawer() {
     );
   });
 
-  console.log("OPACITYDURATION:", opacityDuration.value);
-
   const content = useMemo(() => {
     switch (view) {
       case "default":
