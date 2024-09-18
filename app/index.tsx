@@ -1,7 +1,7 @@
 import DefaultDrawerView from "@/components/drawerViews/defaultDrawer";
 import KeyView from "@/components/drawerViews/keyView";
 import RemoveView from "@/components/drawerViews/removeView";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -10,19 +10,21 @@ import Animated, {
   LinearTransition,
   SlideInDown,
   SlideOutDown,
-  FadeInUp,
-  FadeOutDown,
   useSharedValue,
   runOnJS,
   useAnimatedStyle,
   clamp,
   withSpring,
+  Easing,
+  useDerivedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HORIZONTAL_MARGIN = 16;
 const PADDING = 24;
-const BORDER_RADIUS = 32;
+const BORDER_RADIUS = 36;
+const MIN_DURATION = 170; // in milliseconds
+const MAX_DURATION = 290; // in milliseconds
 
 export default function FamilyDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +42,7 @@ export default function FamilyDrawer() {
 
   const translateY = useSharedValue(0);
   const contentHeight = useSharedValue(0);
+  const previousHeightRef = useRef(0);
 
   const panGesture = Gesture.Pan()
     .onChange((event) => {
@@ -69,6 +72,25 @@ export default function FamilyDrawer() {
       transform: [{ translateY: translateY.value }],
     };
   });
+
+  const opacityDuration = useDerivedValue(() => {
+    if (previousHeightRef.current === 0) {
+      previousHeightRef.current = contentHeight.value;
+      return MIN_DURATION;
+    }
+
+    const heightDifference = Math.abs(
+      contentHeight.value - previousHeightRef.current
+    );
+    previousHeightRef.current = contentHeight.value;
+
+    return Math.min(
+      Math.max((heightDifference / 500) * 1000, MIN_DURATION),
+      MAX_DURATION
+    );
+  });
+
+  console.log("OPACITYDURATION:", opacityDuration.value);
 
   const content = useMemo(() => {
     switch (view) {
@@ -102,6 +124,15 @@ export default function FamilyDrawer() {
     }
   }, [view]);
 
+  //LAYOUT ANIMATIOSN
+  const heightEasing = Easing.bezier(0.26, 1, 0.5, 1).factory();
+  const contentEasing = Easing.bezier(0.26, 0.8, 0.25, 1).factory();
+
+  const layoutAnimationConfig = useMemo(
+    () => LinearTransition.duration(MAX_DURATION).easing(heightEasing),
+    []
+  );
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={handleOpen}>
@@ -120,18 +151,19 @@ export default function FamilyDrawer() {
               style={[styles.drawer, { bottom: bottom }, rDrawerStyle]}
               entering={SlideInDown}
               exiting={SlideOutDown}
-              layout={LinearTransition.springify()
-                .damping(1)
-                .stiffness(200)
-                .overshootClamping(-1)}
+              layout={layoutAnimationConfig}
               onLayout={(event) => {
                 contentHeight.value = event.nativeEvent.layout.height;
               }}
             >
               <Animated.View style={styles.content}>
                 <Animated.View
-                  entering={FadeInUp.duration(150)}
-                  exiting={FadeOutDown.duration(150)}
+                  entering={FadeIn.duration(opacityDuration.value).easing(
+                    contentEasing
+                  )}
+                  exiting={FadeOut.duration(opacityDuration.value).easing(
+                    contentEasing
+                  )}
                   key={view}
                 >
                   {content}
